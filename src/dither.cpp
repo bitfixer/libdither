@@ -50,6 +50,22 @@ int main(int argc, char** argv)
         p->setColorAtIndex(black, 0);
         p->setColorAtIndex(white, 1);
     }
+    else if (strcmp(paletteString, "bg") == 0)
+    {
+        p = new Palette(2);
+        Color black;
+        black.rgb[0] = 0.0;
+        black.rgb[1] = 0.0;
+        black.rgb[2] = 0.0;
+
+        Color green;
+        black.rgb[0] = 0.0;
+        black.rgb[1] = 1.0;
+        black.rgb[2] = 0.0;
+
+        p->setColorAtIndex(black, 0);
+        p->setColorAtIndex(green, 1);
+    }
     else if (strcmp(paletteString, "cga") == 0)
     {
         p = new Palette(4);
