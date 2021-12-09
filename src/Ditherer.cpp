@@ -6,8 +6,8 @@
 //  Copyright © 2017 Michael Hill. All rights reserved.
 //
 
-#include "Ditherer.hpp"
-#include "C64Image.hpp"
+#include "Ditherer.h"
+#include "C64Image.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>

@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "Image.hpp"
+#include "Image.h"
 #include "math.h"
 #include <string.h>
 #include <map>
