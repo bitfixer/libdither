@@ -38,6 +38,8 @@ Image* FloydSteinbergDitherer::createDitheredImageFromImageWithPalette(const Ima
         {
             Pixel* p = dImage->pixelAt(w, h);
             pixelColor.fromPixel(*p);
+
+            pixelColor.clip();
             palette.getClosestColorTo(pixelColor, paletteColor, p->palette_index);
             
             for (int c = 0; c < 3; c++)

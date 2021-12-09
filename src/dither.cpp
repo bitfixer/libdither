@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 
     Ditherer* fsDitherer = Ditherer::createFloydSteinbergDitherer();
 
-    /*
+/*
     Palette p(2);
 
     Color black;
@@ -44,7 +44,7 @@ int main(int argc, char** argv)
 
     p.setColorAtIndex(black, 0);
     p.setColorAtIndex(white, 1);
-    */
+*/
 
     Palette p(4);
 
@@ -73,19 +73,35 @@ int main(int argc, char** argv)
     blue.rgb[1] = 0.0;
     blue.rgb[2] = 1.0;
 
+    Color magenta;
+    magenta.rgb[0] = 1.0;
+    magenta.rgb[1] = 85.0/255.0;
+    magenta.rgb[2] = 1.0;
+
+    Color cyan;
+    cyan.rgb[0] = 85.0/255.0;
+    cyan.rgb[1] = 1.0;
+    cyan.rgb[2] = 1.0;
+
     printf("a\n");
 
     p.setColorAtIndex(black, 0);
-    //p.setColorAtIndex(white, 1);
-    p.setColorAtIndex(red, 1);
-    p.setColorAtIndex(green, 2);
-    p.setColorAtIndex(blue, 3);
+    p.setColorAtIndex(white, 1);
+    //p.setColorAtIndex(red, 2);
+    //p.setColorAtIndex(green, 3);
+    //p.setColorAtIndex(blue, 4);
+
+    p.setColorAtIndex(cyan, 2);
+    p.setColorAtIndex(magenta, 3);
 
     printf("here\n");
+    
 
-    fsDitherer->ditherImageInPlaceWithPalette(inputImage, p);
+    Image* outputImage = fsDitherer->createDitheredImageFromImageWithPalette(inputImage, p);
+    outputImage->writePPM(outputFileName);
 
-    inputImage.writePPM(outputFileName);
+    //fsDitherer->ditherImageInPlaceWithPalette(inputImage, p);
+    //inputImage.writePPM(outputFileName);
 
 
 
