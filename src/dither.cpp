@@ -148,6 +148,22 @@ int main(int argc, char** argv)
             p->setColorAtIndex(red, 2);
             p->setColorAtIndex(gold, 3);
         }
+        else if (strcmp(paletteString, "rgb") == 0)
+        {
+            p = new Palette(5);
+
+            Color black(0,0,0);
+            Color red(1,0,0);
+            Color green(0,1.0,0);
+            Color blue(0,0,1.0);
+            Color white(1,1,1);
+
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(red, 1);
+            p->setColorAtIndex(green, 2);
+            p->setColorAtIndex(blue, 3);
+            p->setColorAtIndex(white, 4);
+        }
 
         outputImage = ditherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     }
