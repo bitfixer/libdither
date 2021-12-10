@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     // open input file
     Image inputImage(inputFileName);
     Image* outputImage;
-    //Ditherer* ditherer;
+    Ditherer* ditherer;
 
     if (strcmp(dithererString, "c64") == 0)
     {
@@ -68,7 +68,14 @@ int main(int argc, char** argv)
     }
     else
     {
-        Ditherer* fsDitherer = Ditherer::createFloydSteinbergDitherer();
+        if (strcmp(dithererString, "at") == 0)
+        {
+            ditherer = Ditherer::createAtkinsonDitherer();
+        }
+        else
+        {
+            ditherer = Ditherer::createFloydSteinbergDitherer();
+        }
 
         // check chosen palette
         Palette* p;
@@ -142,7 +149,7 @@ int main(int argc, char** argv)
             p->setColorAtIndex(gold, 3);
         }
 
-        outputImage = fsDitherer->createDitheredImageFromImageWithPalette(inputImage, *p);
+        outputImage = ditherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     }
     outputImage->writePPM(outputFileName);
 }

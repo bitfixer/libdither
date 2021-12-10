@@ -96,6 +96,90 @@ void FloydSteinbergDitherer::ditherImageInPlaceWithPalette(const Image& image, c
     }
 }
 
+class AtkinsonDitherer : public Ditherer
+{
+public:
+    Image* createDitheredImageFromImageWithPalette(const Image& image, const Palette& palette);
+    void ditherImageInPlaceWithPalette(const Image& image, const Palette& palette);
+};
+
+Image* AtkinsonDitherer::createDitheredImageFromImageWithPalette(const Image& image, const Palette& palette)
+{
+    // create copy of image
+    Image* dImage = new Image(image);
+    
+    Color pixelColor;
+    Color paletteColor;
+    //int pColorIndex = -1;
+    for (int h = 0; h < dImage->getHeight(); h++)
+    {
+        for (int w = 0; w < dImage->getWidth(); w++)
+        {
+            Pixel* p = dImage->pixelAt(w, h);
+            pixelColor.fromPixel(*p);
+            pixelColor.clip();
+            palette.getClosestColorTo(pixelColor, paletteColor, p->palette_index);
+            
+            for (int c = 0; c < 3; c++)
+            {
+                float diff = pixelColor.rgb[c] - paletteColor.rgb[c];
+                float err = diff / 8.0;
+                
+                Pixel *pp;
+                pp = dImage->pixelAt(w+1, h);
+                if (pp) pp->rgb[c] += err;
+                pp = dImage->pixelAt(w+2, h);
+                if (pp) pp->rgb[c] += err;
+                pp = dImage->pixelAt(w-1, h+1);
+                if (pp) pp->rgb[c] += err;
+                pp = dImage->pixelAt(w, h+1);
+                if (pp) pp->rgb[c] += err;
+                pp = dImage->pixelAt(w+1, h+1);
+                if (pp) pp->rgb[c] += err;
+                pp = dImage->pixelAt(w, h+2);
+                if (pp) pp->rgb[c] += err;
+                
+                p->rgb[c] = paletteColor.rgb[c];
+            }
+        }
+    }
+    
+    return dImage;
+}
+
+void AtkinsonDitherer::ditherImageInPlaceWithPalette(const Image& image, const Palette& palette)
+{
+    Color pixelColor;
+    Color paletteColor;
+    for (int h = 0; h < image.getHeight(); h++)
+    {
+        for (int w = 0; w < image.getWidth(); w++)
+        {
+            Pixel* p = image.pixelAt(w, h);
+            pixelColor.fromPixel(*p);
+            pixelColor.clip();
+            palette.getClosestColorTo(pixelColor, paletteColor, p->palette_index);
+            
+            for (int c = 0; c < 3; c++)
+            {
+                float diff = pixelColor.rgb[c] - paletteColor.rgb[c];
+                
+                Pixel *pp;
+                pp = image.pixelAt(w+1, h);
+                if (pp) pp->rgb[c] += diff * 7.0 / 16.0;
+                pp = image.pixelAt(w-1, h+1);
+                if (pp) pp->rgb[c] += diff * 3.0 / 16.0;
+                pp = image.pixelAt(w, h+1);
+                if (pp) pp->rgb[c] += diff * 5.0 / 16.0;
+                pp = image.pixelAt(w+1, h+1);
+                if (pp) pp->rgb[c] += diff * 1.0 / 16.0;
+                
+                p->rgb[c] = paletteColor.rgb[c];
+            }
+        }
+    }
+}
+
 class NearestNeighborDitherer : public Ditherer
 {
 public:
@@ -250,6 +334,11 @@ void C64Ditherer::processRow(C64Image* image, int blockWidth, int blockHeight, i
 Ditherer* Ditherer::createFloydSteinbergDitherer()
 {
     return new FloydSteinbergDitherer();
+}
+
+Ditherer* Ditherer::createAtkinsonDitherer()
+{
+    return new AtkinsonDitherer();
 }
 
 Ditherer* Ditherer::createC64Ditherer()

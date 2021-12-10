@@ -20,6 +20,7 @@ public:
     virtual void ditherImageInPlaceWithPalette(const Image& image, const Palette& palette) {};
     
     static Ditherer* createFloydSteinbergDitherer();
+    static Ditherer* createAtkinsonDitherer();
     static Ditherer* createC64Ditherer();
     static Ditherer* createNearestNeighborDitherer();
 };
