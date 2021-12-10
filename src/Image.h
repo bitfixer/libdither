@@ -38,6 +38,7 @@ class Color
 {
 public:
     Color();
+    Color(float r, float g, float b);
     float distanceFromColor(const Color& color);
     void fromPixel(const Pixel& pixel);
     void fromColor(const Color& color);

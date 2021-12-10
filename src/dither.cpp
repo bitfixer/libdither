@@ -4,6 +4,27 @@
 #include "Image.h"
 #include "Ditherer.h"
 
+unsigned char c64_colors[] =
+{
+    0,      0,      0,
+    255,    255,    255,
+    136,    0,      0,
+    170,    255,    238,
+    204,    68,     204,
+    0,      204,    85,
+    0,      0,      170,
+    238,    238,    119,
+    221,    136,    85,
+    102,    68,     0,
+    255,    119,    119,
+    51,     51,     51,
+    119,    119,    119,
+    170,    255,    102,
+    0,      136,    255,
+    187,    187,    187
+};
+
+int num_64_colors = 16;
 
 int main(int argc, char** argv)
 {
@@ -12,7 +33,9 @@ int main(int argc, char** argv)
     char inputFileName[256];
     char outputFileName[256];
     char paletteString[256];
-    while ((opt = getopt(argc, argv, "i:o:p:")) != -1)
+    char dithererString[256];
+
+    while ((opt = getopt(argc, argv, "i:o:p:d:")) != -1)
     {
         switch (opt)
         {
@@ -25,77 +48,101 @@ int main(int argc, char** argv)
             case 'p':
                 strcpy(paletteString, optarg);
                 break;
+            case 'd':
+                strcpy(dithererString, optarg);
+                break;
         }
     }
 
     // open input file
     Image inputImage(inputFileName);
-    Ditherer* fsDitherer = Ditherer::createFloydSteinbergDitherer();
+    Image* outputImage;
+    //Ditherer* ditherer;
 
-    // check chosen palette
-    Palette* p;
-    if (strcmp(paletteString, "bw") == 0)
+    if (strcmp(dithererString, "c64") == 0)
     {
-        p = new Palette(2);
-        Color black;
-        black.rgb[0] = 0.0;
-        black.rgb[1] = 0.0;
-        black.rgb[2] = 0.0;
+        Ditherer* c64Ditherer = Ditherer::createC64Ditherer();
+        Palette c64palette(c64_colors, num_64_colors);
 
-        Color white;
-        black.rgb[0] = 1.0;
-        black.rgb[1] = 1.0;
-        black.rgb[2] = 1.0;
-
-        p->setColorAtIndex(black, 0);
-        p->setColorAtIndex(white, 1);
+        outputImage = c64Ditherer->createDitheredImageFromImageWithPalette(inputImage, c64palette);
     }
-    else if (strcmp(paletteString, "bg") == 0)
+    else
     {
-        p = new Palette(2);
-        Color black;
-        black.rgb[0] = 0.0;
-        black.rgb[1] = 0.0;
-        black.rgb[2] = 0.0;
+        Ditherer* fsDitherer = Ditherer::createFloydSteinbergDitherer();
 
-        Color green;
-        black.rgb[0] = 0.0;
-        black.rgb[1] = 1.0;
-        black.rgb[2] = 0.0;
+        // check chosen palette
+        Palette* p;
+        if (strcmp(paletteString, "bw") == 0)
+        {
+            p = new Palette(2);
+            Color black(0,0,0);
+            Color white(1,1,1);
 
-        p->setColorAtIndex(black, 0);
-        p->setColorAtIndex(green, 1);
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(white, 1);
+        }
+        else if (strcmp(paletteString, "bg") == 0)
+        {
+            p = new Palette(2);
+            Color black(0,0,0);
+            Color green(0,1,0);
+
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(green, 1);
+        }
+        else if (strcmp(paletteString, "amber") == 0)
+        {
+            p = new Palette(2);
+            Color black(0,0,0);
+            Color amber(1,0.75,0);
+
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(amber, 1);
+        }
+        else if (strcmp(paletteString, "cga") == 0)
+        {
+            p = new Palette(4);
+
+            Color black(0,0,0);
+            Color white(1,1,1);
+            Color magenta(1.0 ,85.0/255.0, 1.0);
+            Color cyan(85.0/255.0, 1.0, 1.0);
+            
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(white, 1);
+            p->setColorAtIndex(cyan, 2);
+            p->setColorAtIndex(magenta, 3);
+        }
+        else if (strcmp(paletteString, "cga2") == 0)
+        {
+            p = new Palette(4);
+
+            Color black(0,0,0);
+            Color green(85.0/255.0, 1.0, 85.0/255.0);
+            Color red(1.0 ,85.0/255.0, 85.0/255.0);
+            Color yellow(1.0, 1.0, 85.0/255.0);
+            
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(green, 1);
+            p->setColorAtIndex(red, 2);
+            p->setColorAtIndex(yellow, 3);
+        }
+        else if (strcmp(paletteString, "xmas") == 0)
+        {
+            p = new Palette(4);
+
+            Color black(0,0,0);
+            Color green(0, 1.0, 0.0);
+            Color red(1.0 , 0.0, 0.0);
+            Color gold(1.0, 215.0/255.0, 0.0);
+
+            p->setColorAtIndex(black, 0);
+            p->setColorAtIndex(green, 1);
+            p->setColorAtIndex(red, 2);
+            p->setColorAtIndex(gold, 3);
+        }
+
+        outputImage = fsDitherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     }
-    else if (strcmp(paletteString, "cga") == 0)
-    {
-        p = new Palette(4);
-
-        Color black;
-        black.rgb[0] = 0.0;
-        black.rgb[1] = 0.0;
-        black.rgb[2] = 0.0;
-
-        Color white;
-        white.rgb[0] = 1.0;
-        white.rgb[1] = 1.0;
-        white.rgb[2] = 1.0;
-
-        Color magenta;
-        magenta.rgb[0] = 1.0;
-        magenta.rgb[1] = 85.0/255.0;
-        magenta.rgb[2] = 1.0;
-
-        Color cyan;
-        cyan.rgb[0] = 85.0/255.0;
-        cyan.rgb[1] = 1.0;
-        cyan.rgb[2] = 1.0;
-
-        p->setColorAtIndex(black, 0);
-        p->setColorAtIndex(white, 1);
-        p->setColorAtIndex(cyan, 2);
-        p->setColorAtIndex(magenta, 3);
-    }
-    
-    Image* outputImage = fsDitherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     outputImage->writePPM(outputFileName);
 }

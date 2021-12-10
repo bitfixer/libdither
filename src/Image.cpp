@@ -27,6 +27,13 @@ Color::Color()
     }
 }
 
+Color::Color(float r, float g, float b)
+{
+    rgb[0] = r;
+    rgb[1] = g;
+    rgb[2] = b;
+}
+
 float Color::distanceFromColor(const Color &color)
 {
     float error = 0;
@@ -137,10 +144,6 @@ void Palette::getClosestColorTo(const Color& inColor, Color& outColor, int& inde
 {
     float lowestError = 999999.9;
     int lowestErrorIndex = -1;
-
-    Color clipColor;
-    clipColor.fromColor(inColor);
-    //clipColor.clip();
     
     for (int i = 0; i < numColors; i++)
     {
@@ -162,7 +165,7 @@ void Palette::getClosestColorTo(const Color& inColor, Color& outColor, int& inde
             
         if (useColor)
         {
-            float error = c->distanceFromColor(clipColor);
+            float error = c->distanceFromColor(inColor);
             if (error < lowestError)
             {
                 lowestError = error;
