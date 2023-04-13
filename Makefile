@@ -1,7 +1,7 @@
 SRC_DIR := src
 BIN_DIR := bin
 
-SOURCES := $(SRC_DIR)/Image.cpp $(SRC_DIR)/Ditherer.cpp $(SRC_DIR)/dither.cpp
+SOURCES := $(SRC_DIR)/Image.cpp $(SRC_DIR)/Ditherer.cpp $(SRC_DIR)/dither.cpp upng/upng.c
 
 $(BIN_DIR)/dither: $(SOURCES)
 	mkdir -p $(BIN_DIR)

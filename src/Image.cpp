@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include "Image.h"
 #include "math.h"
+#include "../upng/upng.h"
 #include <string.h>
 #include <map>
 #include <string>
@@ -301,16 +302,22 @@ Image::Image(const Image& im, int w, int h)
 
 Image::Image(const char* fname)
 {
-    FILE* fp = fopen(fname, "rb");
-    initWithFile(fp);
+    // check file name
+    int len = strlen(fname);
+    if (len > 4 && strcmp(&fname[len-4], ".png") == 0) {
+        initWithPNG(fname);
+    } else {
+        FILE* fp = fopen(fname, "rb");
+        initWithPPM(fp);
+    }
 }
 
 Image::Image(FILE* fp)
 {
-    initWithFile(fp);
+    initWithPPM(fp);
 }
 
-void Image::initWithFile(FILE *fp)
+void Image::initWithPPM(FILE *fp)
 {
     unsigned char temp[256];
     fread(temp, 1, 2, fp);
@@ -411,6 +418,34 @@ void Image::initWithFile(FILE *fp)
     {
         fclose(fp);
     }
+}
+
+void Image::initWithPNG(const char* fname) {
+    upng_t* upng;
+
+    upng = upng_new_from_file(fname);
+    if (upng == NULL) {
+        printf("error: could not load png %s\n", fname);
+        return;
+    }
+
+    upng_decode(upng);
+
+    if (upng_get_error(upng) != UPNG_EOK) {
+        printf("error: could not decode png %s\n", fname);
+        return;
+    }
+
+    width = upng_get_width(upng);
+    height = upng_get_height(upng);
+    int size = upng_get_size(upng);
+    upng_format f = upng_get_format(upng);
+
+    uint8_t* buffer = (uint8_t*)upng_get_buffer(upng);
+    // allocate pixels
+    pixels = new Pixel[width*height];    
+    initWithData(buffer, width*4, 4, 0, 1, 2);
+    upng_free(upng);
 }
 
 Image::Image(int w, int h)

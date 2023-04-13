@@ -211,7 +211,7 @@ int main(int argc, char** argv)
     }
 
     if (outputFileType == PPM) {
-        outputImage->writeXBM(outputFileName);
+        outputImage->writePPM(outputFileName);
     } else if (outputFileType == XBM) {
         outputImage->writeXBM(outputFileName);
     }

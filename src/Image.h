@@ -127,7 +127,8 @@ private:
     Pixel* pixels = NULL;
     
     void initWithData(unsigned char* pixels, int bytesPerRow, int bytesPerPixel, int redIndex, int greenIndex, int blueIndex);
-    void initWithFile(FILE* fp);
+    void initWithPPM(FILE* fp);
+    void initWithPNG(const char* fname);
 };
 
 #endif /* Image_hpp */
