@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include "Image.h"
@@ -26,6 +27,26 @@ unsigned char c64_colors[] =
 
 int num_64_colors = 16;
 
+typedef enum {
+    PPM,
+    XBM
+} output_file_type_t;
+
+bool has_suffix(char* str, const char* suffix) {
+    int str_len = strlen(str);
+    int suffix_len = strlen(suffix);
+
+    if (str_len < suffix_len) {
+        return false;
+    }
+
+    if (strcmp(&str[str_len - suffix_len], suffix) == 0) {
+        return true;
+    }
+
+    return false;
+}
+
 int main(int argc, char** argv)
 {
     // get command line options
@@ -34,6 +55,13 @@ int main(int argc, char** argv)
     char outputFileName[256];
     char paletteString[256];
     char dithererString[256];
+
+    memset(inputFileName, 0, 256);
+    memset(outputFileName, 0, 256);
+    memset(paletteString, 0, 256);
+    memset(dithererString, 0, 256);
+
+    output_file_type_t outputFileType = PPM;
 
     while ((opt = getopt(argc, argv, "i:o:p:d:")) != -1)
     {
@@ -52,6 +80,20 @@ int main(int argc, char** argv)
                 strcpy(dithererString, optarg);
                 break;
         }
+    }
+
+    if (strlen(inputFileName) == 0) {
+        printf("error: no input file name specified.\n");
+        exit(1);
+    }
+
+    if (strlen(outputFileName) == 0) {
+        printf("error: no output file name specified.\n");
+        exit(1);
+    }
+
+    if (has_suffix(outputFileName, ".xbm") || has_suffix(outputFileName, ".xbm")) {
+        outputFileType = XBM;
     }
 
     // open input file
@@ -167,5 +209,10 @@ int main(int argc, char** argv)
 
         outputImage = ditherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     }
-    outputImage->writePPM(outputFileName);
+
+    if (outputFileType == PPM) {
+        outputImage->writeXBM(outputFileName);
+    } else if (outputFileType == XBM) {
+        outputImage->writeXBM(outputFileName);
+    }
 }

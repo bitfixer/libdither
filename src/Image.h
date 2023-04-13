@@ -107,6 +107,8 @@ public:
     Pixel* pixelAt (int w, int h) const;
     void writePPM(const char* fname);
     void writePPM(FILE* fp);
+    void writeXBM(const char* fname);
+    void writeXBM(FILE* fp);
     void writeRawMono(FILE* fp);
     int getWidth() const { return width; }
     int getHeight() const { return height; }

@@ -721,6 +721,56 @@ void Image::writePPM(FILE *fp)
     }
 }
 
+void Image::writeXBM(const char *fname)
+{
+    FILE* fp = fopen(fname, "wb");
+    writeXBM(fp);
+}
+
+// Write out the image as an XBM file
+void Image::writeXBM(FILE *out) {
+
+    fprintf(out, "#define image_width %d\n", width);
+    fprintf(out, "#define image_height %d\n", height);
+    fprintf(out, "static unsigned char image_bits[] = {\n");
+
+    int rowWidth = width / 8;
+    if (width % 8 != 0) {
+        //rowWidth++;
+    }
+
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < rowWidth; x++) {
+            uint8_t byte = 0;
+            for (int bit = 0; bit < 8; bit++) {
+                Pixel* pixel = pixelAt(x * 8 + bit, y);
+                if (pixel->rgb[0] < 0.5f || pixel->rgb[1] < 0.5f || pixel->rgb[2] < 0.5f) {
+                    byte |= 1 << bit;
+                }
+            }
+
+
+            fprintf(out, "0x%02x,", byte);
+        }
+        uint8_t leftoverByte = 0;
+        for (int i = 0; i < width % 8; i++) {
+            Pixel* pixel = pixelAt(width - 8 + i, y);
+                if (pixel->rgb[0] < 0.5f || pixel->rgb[1] < 0.5f || pixel->rgb[2] < 0.5f) {
+                    leftoverByte |= 1 << i;
+                }
+            
+        }
+        fprintf(out, "0x%02x,", leftoverByte);
+        fprintf(out, "\n");
+    }
+
+    fprintf(out, "};\n");
+    if (out != stdout) {
+      fclose(out);
+    }
+}
+
 // write out image 
 void Image::writeRawMono(FILE* fp)
 {
