@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    if (has_suffix(outputFileName, ".xbm") || has_suffix(outputFileName, ".xbm")) {
+    if (has_suffix(outputFileName, ".xbm") || has_suffix(outputFileName, ".XBM")) {
         outputFileType = XBM;
     }
 
