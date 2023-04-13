@@ -451,6 +451,8 @@ void Image::initWithPNG(const char* fname) {
         initWithData(buffer, width*4, 4, 0, 1, 2);
     } else if (f == UPNG_LUMINANCE8) {
         initWithData(buffer, width, 1, 0, 0, 0);
+    } else if (f == UPNG_LUMINANCE_ALPHA8) {
+        initWithData(buffer, width*2, 2, 0, 0, 0);
     } else if (f == UPNG_RGBA16) {
         // 16 bit color
         // just use the higher byte (for now)
