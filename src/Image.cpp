@@ -438,13 +438,25 @@ void Image::initWithPNG(const char* fname) {
 
     width = upng_get_width(upng);
     height = upng_get_height(upng);
-    int size = upng_get_size(upng);
     upng_format f = upng_get_format(upng);
 
     uint8_t* buffer = (uint8_t*)upng_get_buffer(upng);
     // allocate pixels
-    pixels = new Pixel[width*height];    
-    initWithData(buffer, width*4, 4, 0, 1, 2);
+    pixels = new Pixel[width*height];
+
+    // handle different pixel formats
+    if (f == UPNG_RGB8) {
+        initWithData(buffer, width*3, 3, 0, 1, 2);
+    } else if (f == UPNG_RGBA8) {
+        initWithData(buffer, width*4, 4, 0, 1, 2);
+    } else if (f == UPNG_LUMINANCE8) {
+        initWithData(buffer, width, 1, 0, 0, 0);
+    } else if (f == UPNG_LUMINANCEA8) {
+        initWithData(buffer, width*2, 0, 0, 0);
+    } else {
+        printf("16 bit color unsupported (for now)\n"); 
+    }
+
     upng_free(upng);
 }
 
