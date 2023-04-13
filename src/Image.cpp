@@ -451,6 +451,12 @@ void Image::initWithPNG(const char* fname) {
         initWithData(buffer, width*4, 4, 0, 1, 2);
     } else if (f == UPNG_LUMINANCE8) {
         initWithData(buffer, width, 1, 0, 0, 0);
+    } else if (f == UPNG_RGBA16) {
+        // 16 bit color
+        // just use the higher byte (for now)
+        initWithData(buffer, width*8, 8, 0, 2, 4);
+    } else if (f == UPNG_RGB16) {
+        initWithData(buffer, width*6, 6, 0, 2, 4);
     } else {
         printf("format %d unsupported (for now)\n", f); 
     }
