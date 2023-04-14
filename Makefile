@@ -7,5 +7,8 @@ $(BIN_DIR)/dither: $(SOURCES)
 	mkdir -p $(BIN_DIR)
 	g++ -o $(BIN_DIR)/dither -std=c++11 $(SOURCES)
 
+upng/upng.c:
+	git submodule update --init --recursive
+
 clean:
 	rm -f $(BIN_DIR)/*

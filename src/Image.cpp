@@ -814,7 +814,10 @@ void Image::writeXBM(FILE *out) {
                 }
             
         }
-        fprintf(out, "0x%02x,", leftoverByte);
+
+        if (width % 8 != 0) {
+            fprintf(out, "0x%02x,", leftoverByte);
+        }
         fprintf(out, "\n");
     }
 
