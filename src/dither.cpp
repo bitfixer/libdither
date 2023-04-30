@@ -206,6 +206,36 @@ int main(int argc, char** argv)
             p->setColorAtIndex(blue, 3);
             p->setColorAtIndex(white, 4);
         }
+        else if (strcmp(paletteString, "3bit") == 0) {
+            p = new Palette(8);
+            int index = 0;
+            for (int r = 0; r < 2; r++) {
+                for (int g = 0; g < 2; g++) {
+                    for (int b = 0; b < 2; b++) {
+                        printf("i %d\n", index);
+                        Color c;
+                        c.set((float)r, (float)g, (float)b);
+                        p->setColorAtIndex(c, index++);
+                    }
+                }
+            }
+        }
+        else if (strcmp(paletteString, "8bit") == 0) {
+            p = new Palette(256);
+            int index = 0;
+            for (int r = 0; r < 8; r++) {
+                for (int g = 0; g < 8; g++) {
+                    for (int b = 0; b < 4; b++) {
+                        Color c;
+                        float rr = ((float)r * 32.0) / 256.0;
+                        float gg = ((float)g * 32.0) / 256.0;
+                        float bb = ((float)b * 64.0) / 256.0;
+                        c.set(rr, gg, bb);
+                        p->setColorAtIndex(c, index++);
+                    }
+                }
+            }
+        }
 
         outputImage = ditherer->createDitheredImageFromImageWithPalette(inputImage, *p);
     }
