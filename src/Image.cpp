@@ -827,6 +827,113 @@ void Image::writeXBM(FILE *out) {
     }
 }
 
+void writeBE(uint16_t val, FILE* fp) {
+    uint8_t byte;
+    byte = ((uint16_t)val & 0xFF00) >> 8;
+    fwrite(&byte, 1, 1, fp);
+
+    byte = (uint16_t)val & 0x00FF;
+    fwrite(&byte, 1, 1, fp);
+}
+
+void Image::writeRGB3(const char *fname)
+{
+    FILE* fp = fopen(fname, "wb");
+    writeRGB3(fp);
+}
+
+// Write out the image as an rgb3 file
+void Image::writeRGB3(FILE *out) {
+    // write out palette indices
+    // first write 2-byte width, height (big endian)
+    //writeBE((uint16_t)width, out);
+    //writeBE((uint16_t)height, out);
+
+    uint8_t byte = 0;
+    int bitsInByte = 0;
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            uint8_t index = (uint8_t)p->palette_index;
+
+            uint8_t bits = index & 0b00000111;
+            if (bitsInByte == 1) {
+                bits <<= 4;
+            }
+
+            byte |= bits;
+            bitsInByte++;
+
+            if (bitsInByte == 2) {
+                fwrite(&byte, 1, 1, out);
+                byte = 0;
+                bitsInByte = 0;
+            }
+        }
+    }
+}
+
+void Image::writeRGB8(const char *fname)
+{
+    FILE* fp = fopen(fname, "wb");
+    writeRGB8(fp);
+}
+
+// Write out the image as an rgb3 file
+void Image::writeRGB8(FILE *out) {
+    // write out palette indices
+    // first write 2-byte width, height (big endian)
+    //writeBE((uint16_t)width, out);
+    //writeBE((uint16_t)height, out);
+
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            uint8_t index = (uint8_t)p->palette_index;
+            fwrite(&index, 1, 1, out);
+        }
+    }
+}
+
+
+void Image::writePBM(const char *fname)
+{
+    FILE* fp = fopen(fname, "wb");
+    writePBM(fp);
+}
+
+// Write out the image as an rgb3 file
+void Image::writePBM(FILE *out) {
+    // write ppm header
+    fprintf(out, "P4\n%d %d\n", width, height);
+
+    int byte = 0;
+    int bitsInByte = 0;
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            //uint8_t index = (uint8_t)p->palette_index;
+            byte <<= 1;
+            if (p->rgb[0] <= 0.5 && p->rgb[1] <= 0.5 && p->rgb[2] <= 0.5) {
+                byte |= 0b1;
+            }
+            bitsInByte++;
+
+            if (bitsInByte == 8) {
+                fwrite(&byte, 1, 1, out);
+                bitsInByte = 0;
+                byte = 0;
+            }
+        }
+    }
+}
+
 // write out image 
 void Image::writeRawMono(FILE* fp)
 {

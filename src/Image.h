@@ -109,6 +109,12 @@ public:
     void writePPM(FILE* fp);
     void writeXBM(const char* fname);
     void writeXBM(FILE* fp);
+    void writeRGB3(const char* fname);
+    void writeRGB3(FILE* fp);
+    void writeRGB8(const char* fname);
+    void writeRGB8(FILE* fp);
+    void writePBM(const char* fname);
+    void writePBM(FILE* fp);
     void writeRawMono(FILE* fp);
     int getWidth() const { return width; }
     int getHeight() const { return height; }

@@ -29,7 +29,10 @@ int num_64_colors = 16;
 
 typedef enum {
     PPM,
-    XBM
+    XBM,
+    PBM,
+    RGB3,
+    RGB8
 } output_file_type_t;
 
 bool has_suffix(char* str, const char* suffix) {
@@ -94,6 +97,12 @@ int main(int argc, char** argv)
 
     if (has_suffix(outputFileName, ".xbm") || has_suffix(outputFileName, ".XBM")) {
         outputFileType = XBM;
+    } else if (has_suffix(outputFileName, ".3b") || has_suffix(outputFileName, ".3B")) {
+        outputFileType = RGB3;
+    } else if (has_suffix(outputFileName, ".8b") || has_suffix(outputFileName, ".8B")) {
+        outputFileType = RGB8;
+    } else if (has_suffix(outputFileName, ".pbm") || has_suffix(outputFileName, ".PBM")) {
+        outputFileType = PBM;
     }
 
     // open input file
@@ -244,5 +253,11 @@ int main(int argc, char** argv)
         outputImage->writePPM(outputFileName);
     } else if (outputFileType == XBM) {
         outputImage->writeXBM(outputFileName);
+    } else if (outputFileType == RGB3) {
+        outputImage->writeRGB3(outputFileName);
+    } else if (outputFileType == RGB8) {
+        outputImage->writeRGB8(outputFileName);
+    } else if (outputFileType == PBM) {
+        outputImage->writePBM(outputFileName);
     }
 }
