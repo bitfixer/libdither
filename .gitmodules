@@ -1,6 +1,3 @@
 [submodule "upng"]
 	path = upng
 	url = git@github.com:elanthis/upng.git
-[submodule "BMP-C"]
-	path = BMP-C
-	url = https://github.com/zhongcheng0519/BMP-C
