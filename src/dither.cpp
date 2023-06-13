@@ -32,7 +32,9 @@ typedef enum {
     XBM,
     PBM,
     RGB3,
-    RGB8
+    RGB8,
+    BW,
+    GRAY
 } output_file_type_t;
 
 bool has_suffix(char* str, const char* suffix) {
@@ -103,6 +105,10 @@ int main(int argc, char** argv)
         outputFileType = RGB8;
     } else if (has_suffix(outputFileName, ".pbm") || has_suffix(outputFileName, ".PBM")) {
         outputFileType = PBM;
+    } else if (has_suffix(outputFileName, ".1b") || has_suffix(outputFileName, ".1B")) {
+        outputFileType = BW;
+    } else if (has_suffix(outputFileName, ".gray") || has_suffix(outputFileName, ".GRAY")) {
+        outputFileType = GRAY;
     }
 
     // open input file
@@ -130,7 +136,7 @@ int main(int argc, char** argv)
 
         // check chosen palette
         Palette* p;
-        if (strcmp(paletteString, "bw") == 0)
+        if (strcmp(paletteString, "bw") == 0 || strcmp(paletteString, "1bit") == 0)
         {
             p = new Palette(2);
             Color black(0,0,0);
@@ -259,5 +265,7 @@ int main(int argc, char** argv)
         outputImage->writeRGB8(outputFileName);
     } else if (outputFileType == PBM) {
         outputImage->writePBM(outputFileName);
+    } else if (outputFileType == BW) {
+        outputImage->writeBW(outputFileName);
     }
 }

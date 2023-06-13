@@ -115,6 +115,9 @@ public:
     void writeRGB8(FILE* fp);
     void writePBM(const char* fname);
     void writePBM(FILE* fp);
+    void writeBW(const char* fname);
+    void writeBW(FILE* fp);
+    void writeRawMono(const char* fname);
     void writeRawMono(FILE* fp);
     int getWidth() const { return width; }
     int getHeight() const { return height; }

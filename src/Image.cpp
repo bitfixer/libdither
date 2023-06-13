@@ -934,6 +934,41 @@ void Image::writePBM(FILE *out) {
     }
 }
 
+void Image::writeBW(const char *fname)
+{
+    FILE* fp = fopen(fname, "wb");
+    writeBW(fp);
+}
+
+// 1 bit mono
+void Image::writeBW(FILE *out) {
+    int byte = 0;
+    int bitsInByte = 0;
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            byte <<= 1;
+            if (p->rgb[0] > 0.5 && p->rgb[1] > 0.5 && p->rgb[2] > 0.5) {
+                byte |= 0b1;
+            }
+            bitsInByte++;
+
+            if (bitsInByte == 8) {
+                fwrite(&byte, 1, 1, out);
+                bitsInByte = 0;
+                byte = 0;
+            }
+        }
+    }
+}
+
+void Image::writeRawMono(const char* fname) {
+    FILE* fp = fopen(fname, "wb");
+    writeRawMono(fp);
+}
+
 // write out image 
 void Image::writeRawMono(FILE* fp)
 {
