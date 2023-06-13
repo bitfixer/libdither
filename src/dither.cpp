@@ -34,7 +34,8 @@ typedef enum {
     RGB3,
     RGB8,
     BW,
-    GRAY
+    GRAY,
+    BMP
 } output_file_type_t;
 
 bool has_suffix(char* str, const char* suffix) {
@@ -109,6 +110,8 @@ int main(int argc, char** argv)
         outputFileType = BW;
     } else if (has_suffix(outputFileName, ".gray") || has_suffix(outputFileName, ".GRAY")) {
         outputFileType = GRAY;
+    } else if (has_suffix(outputFileName, ".bmp") || has_suffix(outputFileName, ".BMP")) {
+        outputFileType = BMP;
     }
 
     // open input file
@@ -267,5 +270,7 @@ int main(int argc, char** argv)
         outputImage->writePBM(outputFileName);
     } else if (outputFileType == BW) {
         outputImage->writeBW(outputFileName);
+    } else if (outputFileType == BMP) {
+        outputImage->writeBMP(outputFileName);
     }
 }

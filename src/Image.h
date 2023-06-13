@@ -115,6 +115,7 @@ public:
     void writeRGB8(FILE* fp);
     void writePBM(const char* fname);
     void writePBM(FILE* fp);
+    void writeBMP(const char* fname);
     void writeBW(const char* fname);
     void writeBW(FILE* fp);
     void writeRawMono(const char* fname);

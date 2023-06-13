@@ -15,6 +15,7 @@
 #include <map>
 #include <string>
 #include <list>
+#include "../BMP-C/src/bmpfile.h"
 
 using std::map;
 using std::string;
@@ -932,6 +933,65 @@ void Image::writePBM(FILE *out) {
             }
         }
     }
+}
+
+void Image::writeBMP(const char *fname)
+{
+    /*
+    // write ppm header
+    fprintf(out, "P4\n%d %d\n", width, height);
+
+    int byte = 0;
+    int bitsInByte = 0;
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            //uint8_t index = (uint8_t)p->palette_index;
+            byte <<= 1;
+            if (p->rgb[0] <= 0.5 && p->rgb[1] <= 0.5 && p->rgb[2] <= 0.5) {
+                byte |= 0b1;
+            }
+            bitsInByte++;
+
+            if (bitsInByte == 8) {
+                fwrite(&byte, 1, 1, out);
+                bitsInByte = 0;
+                byte = 0;
+            }
+        }
+    }*/
+
+    bmpfile_t* out;
+    out = bmp_create(width, height, 1);
+
+    rgb_pixel_t black, white;
+    black.blue = 0;
+    black.green = 0;
+    black.red = 0;
+    black.alpha = 255;
+
+    white.blue = 255;
+    white.green = 255;
+    white.red = 255;
+    white.alpha = 255;
+
+    for (int hh = 0; hh < height; hh++)
+    {
+        for (int ww = 0; ww < width; ww++)
+        {
+            Pixel* p = pixelAt(ww, hh);
+            if (p->rgb[0] <= 0.5 && p->rgb[1] <= 0.5 && p->rgb[2] <= 0.5) {
+                bmp_set_pixel(out, ww, hh, black);
+            } else {
+                bmp_set_pixel(out, ww, hh, white);
+            }
+        }
+    }
+
+    bmp_save(out, fname);
+    bmp_destroy(&out);
 }
 
 void Image::writeBW(const char *fname)
