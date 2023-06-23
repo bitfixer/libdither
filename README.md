@@ -1,6 +1,8 @@
 # libdither
 Library and tools for various dithering effects on images
 
+![dither](https://github.com/johnboiles/libdither/assets/218876/b1ac1c28-4f50-40c8-8a5e-eb3f44987a3b)
+
 ## Compiling
 
 Simply run
