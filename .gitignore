@@ -1,0 +1,11 @@
+bin
+.DS_Store
+*.png
+*.ppm
+*.xbm
+*.3b
+*.8b
+*.pbm
+*.1b
+*.gray
+*.bmp
