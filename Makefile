@@ -5,7 +5,7 @@ SOURCES := $(SRC_DIR)/Image.cpp $(SRC_DIR)/Ditherer.cpp $(SRC_DIR)/dither.cpp up
 
 $(BIN_DIR)/dither: $(SOURCES)
 	mkdir -p $(BIN_DIR)
-	g++ -o $(BIN_DIR)/dither -std=c++11 $(SOURCES)
+	g++ -o $(BIN_DIR)/dither -std=c++11 -pthread -lpthread $(SOURCES)
 
 upng/upng.c:
 	git submodule update --init --recursive
